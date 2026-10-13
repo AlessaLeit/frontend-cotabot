@@ -1,0 +1,58 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    margin: 0;
+    min-height: 100%;
+}
+
+main {
+    height: 100vh;
+    padding: 15px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.top-txt {
+    font-size: 3.5vh;
+    font-weight: 750;
+    margin: 0 0 10px;
+}
+
+.top-box {
+    height: 55%;
+    min-height: 0;
+    display: flex;
+    gap: 15px;
+}
+
+.bottom-box {
+    height: 45%;
+    min-height: 0;
+    display: flex;
+    gap: 15px;
+}
+
+
+.target-values {
+    flex: 4;
+    background: #F9F9F9;
+    border-radius: 16px;
+}
+
+.quotes-list {
+    flex: 4;
+    background: #F9F9F9;
+    border-radius: 16px;
+}
+
+.graphic {
+    flex: 6;
+    background: #F9F9F9;
+    border-radius: 16px;
+}
