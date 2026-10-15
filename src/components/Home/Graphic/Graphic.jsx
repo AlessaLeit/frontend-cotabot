@@ -6,7 +6,7 @@ export default function Graphic() {
         <section className="graphic">
             <header>
                 <img src="src/assets/graphic.png" alt="money icon" />
-                <p>Valores alvo</p>
+                <p>Análise</p>
             </header>
         </section>
     );
