@@ -1,5 +1,5 @@
 import "./HomePage.scss";
-import CurrentQuote from "../../components/Home/CurrentQuote"
+import CurrentQuote from "../../components/Home/CurrentQuote/CurrentQuote"
 
 
 export default function HomePage() {

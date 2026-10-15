@@ -1,5 +1,5 @@
 import "./CurrentQuote.scss";
-import DropDown from "../../components/DropDown/DropDown"
+import DropDown from "../../DropDown/DropDown"
 
 const coins = ["Dólar", "Euro", "Libra", "Iene", "Real", "Bitcoin"];
 const coinsQuote = ["BRL", "USD"];
