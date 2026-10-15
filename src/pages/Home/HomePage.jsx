@@ -1,6 +1,8 @@
 import "./HomePage.scss";
 import CurrentQuote from "../../components/Home/CurrentQuote/CurrentQuote"
-
+import QuoteCalculator from "../../components/Home/QuoteCalculator/QuoteCalculator";
+import TargetValues from "../../components/Home/TargetValues/TargetValues";
+import Graphic from "../../components/Home/Graphic/Graphic";
 
 export default function HomePage() {
 
@@ -9,14 +11,19 @@ export default function HomePage() {
       <p className="top-txt">Quem é vivo sempre aparece...</p>
 
       <div className="top-box">
+
         <CurrentQuote />
 
-        <section className="target-values"></section>
+        <QuoteCalculator />
+
       </div>
 
       <div className="bottom-box">
-        <section className="quotes-list"></section>
-        <section className="graphic"></section>
+        
+        <TargetValues />
+
+        <Graphic />
+
       </div>
     </main>
   );
