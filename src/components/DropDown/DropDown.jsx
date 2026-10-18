@@ -6,12 +6,15 @@ export default function DropDown({
     type,
     variant = "name",
     width,
+    handler,
 }) {
+
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCoin, setSelectedCoin] = useState(type ?? coins[0]);
 
     function handleSelectCoin(coin) {
         setSelectedCoin(coin);
+        handler(coin)
         setIsOpen(false);
     }
 

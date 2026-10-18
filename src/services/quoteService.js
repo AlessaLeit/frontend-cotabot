@@ -4,7 +4,7 @@ import api from "./api";
 export const getQuoteRegistered = async (origin, target, signal) => {
   try {
     const response = await api.get(
-        `/conversion/${origin}/${target}`, 
+        `/coin/conversion/${origin}/${target}`, 
         { signal }
     );
 
@@ -18,7 +18,7 @@ export const getQuoteRegistered = async (origin, target, signal) => {
 export const getQuoteRealTime = async (origin, target, signal) => {
   try {
     const response = await api.get(
-        `/realtime/${origin}/${target}`, 
+        `/coin/realtime/${origin}/${target}`, 
         { signal }
     );
 
@@ -32,7 +32,7 @@ export const getQuoteRealTime = async (origin, target, signal) => {
 export const getQuoteOnPeriod = async (origin, target, days, interval, signal) => {
   try {
     const response = await api.get(
-        `/period/${origin}/${target}/${days}/${interval}`, 
+        `/coin/period/${origin}/${target}/${days}/${interval}`, 
         { signal }
     );
 

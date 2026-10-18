@@ -1,6 +1,8 @@
 import "./QuoteCalculator.scss";
 import DropDown from "../../DropDown/DropDown"
 import { useState } from "react";
+import { coinsNames } from "../../../services/coinsList";
+import { coinsCodes } from "../../../services/coinsList";
 
 const coins = ["Dólar", "Euro", "Libra", "Iene", "Real", "Bitcoin"];
 const coinsQuote = ["Dólar", "Euro", "Libra", "Iene", "Real", "Bitcoin"];
@@ -39,14 +41,14 @@ export default function QuoteCalculator(quoteInfo) {
                 </div>
                 <div className="dropdown-area">
                     <DropDown
-                        coins={coins}
-                        type="Dólar"
+                        coins={coinsCodes}
+                        type="USD"
                         variant="code"
                         width="150px"
                     />
                     <DropDown
-                        coins={coinsQuote}
-                        type="Real"
+                        coins={coinsCodes}
+                        type="BRL"
                         variant="code"
                         width="150px"
                     />

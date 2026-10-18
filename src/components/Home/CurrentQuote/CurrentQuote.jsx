@@ -1,10 +1,16 @@
 import "./CurrentQuote.scss";
 import DropDown from "../../DropDown/DropDown"
+import { coinsNames } from "../../../services/coinsList";
 
-const coins = ["Dólar", "Euro", "Libra", "Iene", "Real", "Bitcoin"];
-const coinsQuote = ["BRL", "USD"];
 
-export default function CurrentQuote() {
+
+export default function CurrentQuote({ 
+    quote, 
+    origin, 
+    target,
+    handlerOrigin,
+    handlerTarget,
+}) {
     return (
         <section className="current-quote">
             <header>
@@ -13,20 +19,22 @@ export default function CurrentQuote() {
             </header>
 
             <DropDown 
-                coins={coins}
-                type="Dólar"
+                coins={coinsNames}
+                type={origin}
+                handler={handlerOrigin}
             />
 
             <div className="quote-box">
                 <span className="total-label">Total Convertido</span>
                 <div className="show-quote">
                     <span></span>
-                    <p>R$ 5,18</p>
+                    <p>R$ {quote}</p>
                     <DropDown
-                        coins={coinsQuote}
-                        type="BRL"
+                        coins={coinsNames}
+                        type={target}
                         variant="code"
-                        width="150px"
+                        width="250px"
+                        handler={handlerTarget}
                     />
                 </div>
             </div>
