@@ -1,12 +1,11 @@
+
 import "./CurrentQuote.scss";
-import DropDown from "../../DropDown/DropDown"
+import DropDown from "../../DropDown/DropDown";
 import { coinsNames } from "../../../services/coinsList";
 
-
-
-export default function CurrentQuote({ 
-    quote, 
-    origin, 
+export default function CurrentQuote({
+    quote,
+    origin,
     target,
     handlerOrigin,
     handlerTarget,
@@ -14,25 +13,39 @@ export default function CurrentQuote({
     return (
         <section className="current-quote">
             <header>
-                <img src="src/assets/money.png" alt="money icon" />
+                <img
+                    src="src/assets/money.png"
+                    alt="money icon"
+                />
                 <p>Escolha a moeda</p>
             </header>
 
-            <DropDown 
+            <DropDown
                 coins={coinsNames}
-                type={origin}
+                selected={origin}
                 handler={handlerOrigin}
             />
 
             <div className="quote-box">
-                <span className="total-label">Total Convertido</span>
+                <span className="total-label">
+                    Total Convertido
+                </span>
+
                 <div className="show-quote">
                     <span></span>
-                    <p>R$ {quote}</p>
+
+                    <p>
+                        {quote !== null && quote !== undefined
+                            ? Number(quote).toLocaleString("pt-BR", {
+                                  maximumFractionDigits: 6,
+                              })
+                            : "Carregando..."}
+                    </p>
+
                     <DropDown
                         coins={coinsNames}
-                        type={target}
-                        variant="code"
+                        selected={target}
+                        variant="name"
                         width="250px"
                         handler={handlerTarget}
                     />

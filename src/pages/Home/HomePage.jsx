@@ -1,78 +1,100 @@
+
 import "./HomePage.scss";
-import { useState } from "react";
-import { useEffect } from "react";
-import CurrentQuote from "../../components/Home/CurrentQuote/CurrentQuote"
+import { useState, useEffect } from "react";
+import CurrentQuote from "../../components/Home/CurrentQuote/CurrentQuote";
 import QuoteCalculator from "../../components/Home/QuoteCalculator/QuoteCalculator";
 import TargetValues from "../../components/Home/TargetValues/TargetValues";
 import Graphic from "../../components/Home/Graphic/Graphic";
-import { getQuoteRegistered } from "../../services/quoteService";
-import { getQuoteRealTime } from "../../services/quoteService";
+import {
+    getQuoteRegistered,
+    getQuoteRealTime
+} from "../../services/quoteService";
 import { coinsMask } from "../../services/coinsList";
 
 export default function HomePage() {
+    const [quote, setQuote] = useState(null);
+    const [origin, setOrigin] = useState("Dólar Americano");
+    const [target, setTarget] = useState("Real Brasileiro");
 
-  const [quote, setQuote] = useState(null);
-  const [origin, setOrigin] = useState("Dólar Americano");
-  const [target, setTarget] = useState("Real Brasileiro");
+    useEffect(() => {
+        let cancelled = false;
 
-  async function handleGetQuote(origin, target, getFunction) {
-    if (origin == target) {
-      setQuote(1)
-      return
-    }
-    let result = await getFunction(origin, target)
+        async function loadQuote() {
+            const normalizedOrigin = coinsMask[origin];
+            const normalizedTarget = coinsMask[target];
 
-    setQuote(result.conversion)
-  }
+            if (!normalizedOrigin || !normalizedTarget) {
+                setQuote(null);
+                return;
+            }
 
-  useEffect(() => {
-    let handlerFunction = getQuoteRegistered
-    let normalizedOrigin = coinsMask[origin]
-    let normalizedTarget = coinsMask[target]
+            if (normalizedOrigin === normalizedTarget) {
+                setQuote(1);
+                return;
+            }
 
-    const localOrigins = ["USD", "EUR", "BTC"];
-    const localTargets = ["BRL"];
+            const localOrigins = ["USD", "EUR", "BTC"];
+            const localTargets = ["BRL"];
 
-    if (!localOrigins.includes(normalizedOrigin)){
-      handlerFunction = getQuoteRealTime
-    }
+            const useRegistered =
+                localOrigins.includes(normalizedOrigin) &&
+                localTargets.includes(normalizedTarget);
 
-    if (!localTargets.includes(normalizedOrigin)){
-      handlerFunction = getQuoteRealTime
-    }
+            const getFunction = useRegistered
+                ? getQuoteRegistered
+                : getQuoteRealTime;
 
-    handleGetQuote(
-      normalizedOrigin, 
-      normalizedTarget,
-      handlerFunction
-    )
-  }, [origin, target]);
+            try {
+                const result = await getFunction(
+                    normalizedOrigin,
+                    normalizedTarget
+                );
 
-  return (
-    <main>
-      <p className="top-txt">Quem é vivo sempre aparece...</p>
+                if (!cancelled) {
+                    setQuote(result?.conversion ?? null);
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    setQuote(null);
+                }
 
-      <div className="top-box">
+                console.error("Erro ao buscar cotação:", error);
+            }
+        }
 
-        <CurrentQuote 
-          origin="Dólar Americano"
-          target="Real Brasileiro"
-          quote={quote}
-          handlerOrigin={setOrigin}
-          handlerTarget={setTarget}
-        />
+        loadQuote();
 
-        <QuoteCalculator />
+        return () => {
+            cancelled = true;
+        };
+    }, [origin, target]);
 
-      </div>
+    return (
+        <main>
+            <p className="top-txt">Quem é vivo sempre aparece...</p>
 
-      <div className="bottom-box">
-        
-        <TargetValues />
+            <div className="top-box">
+                <CurrentQuote
+                    origin={origin}
+                    target={target}
+                    quote={quote}
+                    handlerOrigin={setOrigin}
+                    handlerTarget={setTarget}
+                />
 
-        <Graphic />
+                <QuoteCalculator
+                    quote={quote}
+                    origin={origin}
+                    target={target}
+                    handlerOrigin={setOrigin}
+                    handlerTarget={setTarget}
+                />
+            </div>
 
-      </div>
-    </main>
-  );
+            <div className="bottom-box">
+                <TargetValues />
+                <Graphic />
+            </div>
+        </main>
+    );
 }

@@ -46,7 +46,7 @@
     }
 
     span {
-        font-size: 3.5vh;
+        font-size: 3.1vh;
         font-weight: 600;
     }
 
@@ -176,5 +176,74 @@
 
     &:not(:last-child) {
         border-bottom: 1px solid #EDF0F5;
+    }
+}
+
+
+.coin-search {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px 12px;
+
+    border: none;
+    border-bottom: 0.5px solid #64749A;
+    outline: none;
+
+    background-color: #F0F3FA;
+    font: inherit;
+
+    &::placeholder {
+        color: #999;
+    }
+
+    &:focus {
+        border-bottom-color: #a4baee;
+    }
+}
+
+.coin-no-results {
+    padding: 10px 12px;
+    margin: 0;
+
+    color: #999;
+    font-size: 14px;
+    text-align: center;
+}
+
+.coin-dropdown {
+    // Mantém o dropdown acima dos elementos vizinhos.
+    z-index: 1;
+}
+
+.coin-dropdown.open {
+    z-index: 100;
+}
+
+.coin-options {
+    // O campo de busca não deve encolher.
+    box-sizing: border-box;
+    overscroll-behavior: contain;
+
+    .coin-search {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        flex-shrink: 0;
+        min-height: 42px;
+    }
+}
+
+/* Abre acima do botão quando não há espaço embaixo */
+.coin-dropdown.open-upward {
+    .coin-options {
+        top: auto;
+        bottom: 100%;
+        margin-top: 0;
+        margin-bottom: 8px;
+        transform: translateY(8px);
+    }
+
+    &.open .coin-options {
+        transform: translateY(0);
     }
 }
