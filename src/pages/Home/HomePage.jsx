@@ -1,35 +1,42 @@
-
 import "./HomePage.scss";
 import { useState, useEffect } from "react";
 import CurrentQuote from "../../components/Home/CurrentQuote/CurrentQuote";
 import QuoteCalculator from "../../components/Home/QuoteCalculator/QuoteCalculator";
 import TargetValues from "../../components/Home/TargetValues/TargetValues";
 import Graphic from "../../components/Home/Graphic/Graphic";
+
 import {
     getQuoteRegistered,
-    getQuoteRealTime
+    getQuoteRealTime,
+    getQuoteOnPeriod
 } from "../../services/quoteService";
+
 import { coinsMask } from "../../services/coinsList";
 
 export default function HomePage() {
     const [quote, setQuote] = useState(null);
+    const [quoteList, setQuoteList] = useState(null);
+
     const [origin, setOrigin] = useState("Dólar Americano");
     const [target, setTarget] = useState("Real Brasileiro");
 
     useEffect(() => {
-        let cancelled = false;
+        const controller = new AbortController();
 
-        async function loadQuote() {
+        async function loadQuotes() {
             const normalizedOrigin = coinsMask[origin];
             const normalizedTarget = coinsMask[target];
 
             if (!normalizedOrigin || !normalizedTarget) {
                 setQuote(null);
+                setQuoteList(null);
                 return;
             }
 
+            // Mesma moeda: cotação igual a 1.
             if (normalizedOrigin === normalizedTarget) {
                 setQuote(1);
+                setQuoteList([]);
                 return;
             }
 
@@ -45,33 +52,49 @@ export default function HomePage() {
                 : getQuoteRealTime;
 
             try {
-                const result = await getFunction(
-                    normalizedOrigin,
-                    normalizedTarget
-                );
+                // Busca a cotação atual e o histórico em paralelo.
+                const [currentResult, periodResult] = await Promise.all([
+                    getFunction(
+                        normalizedOrigin,
+                        normalizedTarget,
+                        controller.signal
+                    ),
+                    getQuoteOnPeriod(
+                        normalizedOrigin,
+                        normalizedTarget,
+                        30,
+                        "day",
+                        controller.signal
+                    )
+                ]);
 
-                if (!cancelled) {
-                    setQuote(result?.conversion ?? null);
-                }
+                // Evita atualizar os estados com respostas antigas.
+                if (controller.signal.aborted) return;
+
+                setQuote(currentResult?.conversion ?? null);
+                setQuoteList(periodResult);
             } catch (error) {
-                if (!cancelled) {
-                    setQuote(null);
-                }
+                if (controller.signal.aborted) return;
 
-                console.error("Erro ao buscar cotação:", error);
+                console.error("Erro ao buscar cotações:", error);
+
+                setQuote(null);
+                setQuoteList(null);
             }
         }
 
-        loadQuote();
+        loadQuotes();
 
         return () => {
-            cancelled = true;
+            controller.abort();
         };
     }, [origin, target]);
 
     return (
         <main>
-            <p className="top-txt">Quem é vivo sempre aparece...</p>
+            <p className="top-txt">
+                Quem é vivo sempre aparece...
+            </p>
 
             <div className="top-box">
                 <CurrentQuote
@@ -93,7 +116,10 @@ export default function HomePage() {
 
             <div className="bottom-box">
                 <TargetValues />
-                <Graphic />
+
+                <Graphic
+                    quotePeriodList={quoteList}
+                />
             </div>
         </main>
     );
